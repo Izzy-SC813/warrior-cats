@@ -4,6 +4,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gameCanvas'), antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
+renderer.setPixelRatio(window.devicePixelRatio);
 
 // Lighting Setup
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -192,6 +193,7 @@ function startGame() {
   catData.prefix = document.getElementById('nameInput').value.trim() || "Fire";
   document.getElementById('customizationMenu').style.display = 'none';
   document.getElementById('gameStats').style.display = 'block';
+  document.querySelector('.mobile-controls').classList.add('show');
   playerGroup.scale.set(0.4, 0.4, 0.4);
   camera.position.set(0, 2, 3);
   camera.lookAt(0, 0.5, 0);
@@ -216,10 +218,56 @@ function ageOneMoon() {
   updateUI();
 }
 
-// --- 7. INPUT HANDLING ---
+// --- 7. INPUT HANDLING (Keyboard + Touch) ---
 const keys = {};
 window.addEventListener('keydown', (e) => { keys[e.key] = true; });
 window.addEventListener('keyup', (e) => { keys[e.key] = false; });
+
+// Mobile Touch Controls
+function setupMobileControls() {
+  const controlsDiv = document.createElement('div');
+  controlsDiv.className = 'mobile-controls';
+  controlsDiv.innerHTML = `
+    <div class="mobile-dpad">
+      <button class="mobile-btn dpad-up" data-dir="up">▲</button>
+      <button class="mobile-btn dpad-left" data-dir="left">◄</button>
+      <button class="mobile-btn dpad-down" data-dir="down">▼</button>
+      <button class="mobile-btn dpad-right" data-dir="right">►</button>
+    </div>
+    <button class="mobile-btn" id="attackBtn" style="width: 100px;">ATTACK</button>
+  `;
+  document.getElementById('uiOverlay').appendChild(controlsDiv);
+  
+  const mobileDirections = { up: false, down: false, left: false, right: false };
+  
+  document.querySelectorAll('.mobile-dpad button').forEach(btn => {
+    btn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      const dir = btn.dataset.dir;
+      mobileDirections[dir] = true;
+    });
+    btn.addEventListener('pointerup', () => {
+      const dir = btn.dataset.dir;
+      mobileDirections[dir] = false;
+    });
+    btn.addEventListener('pointerleave', () => {
+      const dir = btn.dataset.dir;
+      mobileDirections[dir] = false;
+    });
+  });
+  
+  document.getElementById('attackBtn').addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    keys[' '] = true;
+  });
+  document.getElementById('attackBtn').addEventListener('pointerup', () => {
+    keys[' '] = false;
+  });
+  
+  return mobileDirections;
+}
+
+const mobileDirections = setupMobileControls();
 
 // --- 8. MAIN ANIMATION LOOP ---
 function animate() {
@@ -232,13 +280,19 @@ function animate() {
     if (Math.random() < 0.02) prey.direction = Math.random() * Math.PI * 2;
   });
   
-  // Move player
+  // Move player (Keyboard)
   if (keys['w']) playerGroup.position.z -= 0.1;
   if (keys['s']) playerGroup.position.z += 0.1;
   if (keys['a']) playerGroup.position.x -= 0.1;
   if (keys['d']) playerGroup.position.x += 0.1;
   
-  // Spacebar - hunt/fight
+  // Move player (Mobile)
+  if (mobileDirections.up) playerGroup.position.z -= 0.1;
+  if (mobileDirections.down) playerGroup.position.z += 0.1;
+  if (mobileDirections.left) playerGroup.position.x -= 0.1;
+  if (mobileDirections.right) playerGroup.position.x += 0.1;
+  
+  // Spacebar/Attack - hunt/fight
   if (keys[' ']) {
     preyArray.forEach((prey, i) => {
       const dist = playerGroup.position.distanceTo(prey.position);
