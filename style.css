@@ -1,10 +1,13 @@
-/* Maintain previous styles, add/modify these blocks below */
+/* Mobile-Friendly Styling */
+* { box-sizing: border-box; }
+
 body, html {
   margin: 0;
   padding: 0;
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #050b14;
+  touch-action: none;
 }
 
 #gameCanvas {
@@ -37,29 +40,32 @@ body, html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 380px;
+  width: 90%;
+  max-width: 380px;
   text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 #customizationMenu input {
-  padding: 6px;
+  padding: 8px;
   font-size: 15px;
   border-radius: 6px;
   border: 1px solid #5a7d62;
   margin-bottom: 10px;
   background: #243328;
   color: white;
-  width: 70%;
+  width: 85%;
 }
 
 .menu-label {
-  margin: 8px 0 4px 0;
+  margin: 10px 0 6px 0;
   font-weight: bold;
   font-size: 14px;
   color: #aed1b4;
 }
 
-/* Layout layout layout layout layout grids */
+/* Responsive Grid - changes for mobile */
 .selection-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -71,22 +77,49 @@ button {
   background: #395240;
   color: white;
   border: none;
-  padding: 6px 4px;
+  padding: 8px 6px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
   transition: 0.15s;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 }
 
 button:hover { background: #51755b; }
+button:active { background: #5a8566; }
+
 .eye-btn { background: #2f404d; }
 .eye-btn:hover { background: #405769; }
+.eye-btn:active { background: #4a6a7d; }
 
-#startBtn { background: #a45030; width: 90%; margin-top: 10px; font-size: 15px; grid-column: span 3; }
+#startBtn { 
+  background: #a45030; 
+  width: 90%; 
+  margin-top: 10px; 
+  font-size: 15px; 
+  grid-column: span 3;
+  padding: 12px;
+}
 #startBtn:hover { background: #c56540; }
+#startBtn:active { background: #d4754a; }
 
-.stat-card { position: absolute; top: 20px; left: 20px; width: 200px; }
-.inventory-card { position: absolute; top: 20px; right: 20px; width: 180px; }
+.stat-card { 
+  position: absolute; 
+  top: 20px; 
+  left: 20px; 
+  width: 200px;
+  font-size: 13px;
+}
+
+.inventory-card { 
+  position: absolute; 
+  top: 20px; 
+  right: 20px; 
+  width: 200px;
+  font-size: 13px;
+}
+
 h3, h4 { margin: 0 0 10px 0; }
 
 #dialogueBox {
@@ -99,9 +132,10 @@ h3, h4 { margin: 0 0 10px 0; }
   color: white;
   padding: 15px 30px;
   border-radius: 8px;
-  max-width: 500px;
+  max-width: 90%;
+  width: 90vw;
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   display: none;
 }
 
@@ -109,13 +143,134 @@ h3, h4 { margin: 0 0 10px 0; }
   font-weight: bold;
   border: 1px solid rgba(255,255,255,0.1);
 }
-.tc { background: #8c4f2b; } /* ThunderClan Orange-Brown */
+.tc { background: #8c4f2b; }
 .tc:hover { background: #b06236; }
-.rc { background: #2b547e; } /* RiverClan Water Blue */
+.rc { background: #2b547e; }
 .rc:hover { background: #3b74a6; }
-.wc { background: #556b2f; } /* WindClan Moorland Green */
+.wc { background: #556b2f; }
 .wc:hover { background: #73913f; }
-.sc { background: #2f2f2f; } /* ShadowClan Marsh Black */
+.sc { background: #2f2f2f; }
 .sc:hover { background: #454545; }
 
+/* MOBILE CONTROLS */
+.mobile-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.mobile-controls.show {
+  opacity: 1;
+}
+
+.mobile-btn {
+  width: 50px;
+  height: 50px;
+  background: rgba(80, 120, 90, 0.8);
+  border: 2px solid #5a8566;
+  border-radius: 8px;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.mobile-btn:active {
+  background: rgba(100, 150, 110, 0.95);
+}
+
+.mobile-dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  grid-template-rows: repeat(3, 50px);
+  gap: 5px;
+}
+
+.dpad-up { grid-column: 2; grid-row: 1; }
+.dpad-left { grid-column: 1; grid-row: 2; }
+.dpad-down { grid-column: 2; grid-row: 3; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stat-card { 
+    width: 160px;
+    top: 10px;
+    left: 10px;
+  }
   
+  .inventory-card { 
+    width: 160px;
+    top: 10px;
+    right: 10px;
+  }
+  
+  #customizationMenu {
+    width: 95%;
+    padding: 12px;
+  }
+  
+  #customizationMenu input {
+    font-size: 16px;
+  }
+  
+  button {
+    font-size: 11px;
+    padding: 6px 4px;
+  }
+  
+  .selection-grid {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .mobile-controls.show {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card, .inventory-card {
+    font-size: 11px;
+    width: 140px;
+    padding: 10px;
+  }
+  
+  #customizationMenu {
+    width: 98%;
+    padding: 10px;
+  }
+  
+  button {
+    font-size: 10px;
+    padding: 5px 3px;
+  }
+  
+  .selection-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .mobile-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+  
+  .mobile-dpad {
+    grid-template-columns: repeat(3, 45px);
+    grid-template-rows: repeat(3, 45px);
+    gap: 3px;
+  }
+  
+  #dialogueBox {
+    font-size: 14px;
+    padding: 12px 20px;
+    bottom: 100px;
+  }
+}
