@@ -17,51 +17,78 @@
   <div id="uiOverlay">
     <!-- customization UI -->
     <div id="customizationMenu">
-      <h2>Design Your Warrior</h2>
-      <label for="nameInput">Enter Prefix:</label><br>
-      <input type="text" id="nameInput" placeholder="e.g., Fire, Bramble" value="Fire"><br>
+      <div class="customization-container">
+        <!-- Left: Cat Preview -->
+        <div class="cat-preview-section">
+          <h2>Your Warrior</h2>
+          <div class="preview-box">
+            <canvas id="previewCanvas" width="300" height="350"></canvas>
+          </div>
+          <div class="cat-name-display" id="catNamePreview">Fire-kit</div>
+        </div>
 
-      <p class="menu-label">Choose Your Clan:</p>
-      <div class="selection-grid">
-        <button class="clan-btn tc" onclick="selectClan('ThunderClan')">ThunderClan</button>
-        <button class="clan-btn rc" onclick="selectClan('RiverClan')">RiverClan</button>
-        <button class="clan-btn wc" onclick="selectClan('WindClan')">WindClan</button>
-        <button class="clan-btn sc" onclick="selectClan('ShadowClan')">ShadowClan</button>
+        <!-- Right: Customization Options -->
+        <div class="customization-options">
+          <h2>Design Your Warrior</h2>
+          
+          <div class="form-group">
+            <label for="nameInput">Warrior Prefix:</label>
+            <input type="text" id="nameInput" placeholder="e.g., Fire, Bramble" value="Fire">
+          </div>
+
+          <div class="form-group">
+            <p class="menu-label">🏕️ Choose Your Clan:</p>
+            <div class="selection-grid clan-grid">
+              <button class="clan-btn tc" onclick="selectClan('ThunderClan')">⚡ ThunderClan</button>
+              <button class="clan-btn rc" onclick="selectClan('RiverClan')">💧 RiverClan</button>
+              <button class="clan-btn wc" onclick="selectClan('WindClan')">🌬️ WindClan</button>
+              <button class="clan-btn sc" onclick="selectClan('ShadowClan')">🌙 ShadowClan</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <p class="menu-label">🎨 Fur Color:</p>
+            <div class="selection-grid">
+              <button class="color-btn" onclick="changeFur('orange')" style="background: #d4a373;">Ginger</button>
+              <button class="color-btn" onclick="changeFur('gray')" style="background: #6b7782;">Slate Gray</button>
+              <button class="color-btn" onclick="changeFur('brown')" style="background: #544336;">Brown</button>
+              <button class="color-btn" onclick="changeFur('black')" style="background: #1c1c1c;">Black</button>
+              <button class="color-btn" onclick="changeFur('white')" style="background: #edebe6;">White</button>
+              <button class="color-btn" onclick="changeFur('silver')" style="background: #a1aab3;">Silver</button>
+            </div>
+            <button class="special-btn" onclick="changeFur('tortie')">🌈 Tortoiseshell</button>
+          </div>
+
+          <div class="form-group">
+            <p class="menu-label">✨ Markings:</p>
+            <div class="selection-grid">
+              <button onclick="changeMarkings('solid')">Solid Coat</button>
+              <button onclick="changeMarkings('socks')">White Socks</button>
+              <button onclick="changeMarkings('tabby')">Tabby Face</button>
+              <button onclick="changeMarkings('point')">Siamese Point</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <p class="menu-label">💇 Coat Length:</p>
+            <div class="selection-grid">
+              <button onclick="changeLength('short')">Short Hair</button>
+              <button onclick="changeLength('long')">Long/Fluffy</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <p class="menu-label">👁️ Eye Color:</p>
+            <div class="selection-grid">
+              <button class="eye-btn" onclick="changeEyes('amber')" style="background: #d97e18;">Amber</button>
+              <button class="eye-btn" onclick="changeEyes('green')" style="background: #448c46;">Green</button>
+              <button class="eye-btn" onclick="changeEyes('blue')" style="background: #5ca9e6;">Ice Blue</button>
+            </div>
+          </div>
+
+          <button id="startBtn" onclick="startGame()">⚔️ Enter the Forest</button>
+        </div>
       </div>
-
-      <p class="menu-label">Base Fur Color:</p>
-      <div class="selection-grid">
-        <button onclick="changeFur('orange')">Ginger</button>
-        <button onclick="changeFur('gray')">Slate Gray</button>
-        <button onclick="changeFur('brown')">Brown</button>
-        <button onclick="changeFur('black')">Black</button>
-        <button onclick="changeFur('white')">White</button>
-        <button onclick="changeFur('silver')">Silver</button>
-        <button onclick="changeFur('tortie')" style="grid-column: span 3; background: #4a3525;">Tortoiseshell (Mottled)</button>
-      </div>
-
-      <p class="menu-label">Coat Markings:</p>
-      <div class="selection-grid">
-        <button onclick="changeMarkings('solid')">Solid Coat</button>
-        <button onclick="changeMarkings('socks')">White Socks</button>
-        <button onclick="changeMarkings('tabby')">Tabby Face</button>
-        <button onclick="changeMarkings('point')">Siamese Point</button>
-      </div>
-
-      <p class="menu-label">Coat Length:</p>
-      <div class="selection-grid">
-        <button onclick="changeLength('short')">Short Hair</button>
-        <button onclick="changeLength('long')">Long/Fluffy</button>
-      </div>
-
-      <p class="menu-label">Eye Color:</p>
-      <div class="selection-grid">
-        <button class="eye-btn" onclick="changeEyes('amber')">Amber</button>
-        <button class="eye-btn" onclick="changeEyes('green')">Green</button>
-        <button class="eye-btn" onclick="changeEyes('blue')">Ice Blue</button>
-      </div>
-
-      <button id="startBtn" onclick="startGame()">Enter the Forest</button>
     </div>
 
     <div id="gameStats" style="display:none;">
