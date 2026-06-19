@@ -1,0 +1,121 @@
+/* Maintain previous styles, add/modify these blocks below */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #050b14;
+}
+
+#gameCanvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+#uiOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#customizationMenu, .stat-card, .inventory-card {
+  pointer-events: auto;
+  background: rgba(14, 26, 19, 0.9);
+  color: #e2ebd5;
+  padding: 15px;
+  border-radius: 12px;
+  border: 2px solid #3c5442;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+#customizationMenu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  text-align: center;
+}
+
+#customizationMenu input {
+  padding: 6px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #5a7d62;
+  margin-bottom: 10px;
+  background: #243328;
+  color: white;
+  width: 70%;
+}
+
+.menu-label {
+  margin: 8px 0 4px 0;
+  font-weight: bold;
+  font-size: 14px;
+  color: #aed1b4;
+}
+
+/* Layout layout layout layout layout grids */
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+button {
+  background: #395240;
+  color: white;
+  border: none;
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.15s;
+}
+
+button:hover { background: #51755b; }
+.eye-btn { background: #2f404d; }
+.eye-btn:hover { background: #405769; }
+
+#startBtn { background: #a45030; width: 90%; margin-top: 10px; font-size: 15px; grid-column: span 3; }
+#startBtn:hover { background: #c56540; }
+
+.stat-card { position: absolute; top: 20px; left: 20px; width: 200px; }
+.inventory-card { position: absolute; top: 20px; right: 20px; width: 180px; }
+h3, h4 { margin: 0 0 10px 0; }
+
+#dialogueBox {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 20, 20, 0.9);
+  border: 2px solid #b23b3b;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  text-align: center;
+  font-size: 18px;
+  display: none;
+}
+
+.clan-btn {
+  font-weight: bold;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.tc { background: #8c4f2b; } /* ThunderClan Orange-Brown */
+.tc:hover { background: #b06236; }
+.rc { background: #2b547e; } /* RiverClan Water Blue */
+.rc:hover { background: #3b74a6; }
+.wc { background: #556b2f; } /* WindClan Moorland Green */
+.wc:hover { background: #73913f; }
+.sc { background: #2f2f2f; } /* ShadowClan Marsh Black */
+.sc:hover { background: #454545; }
+
+  
