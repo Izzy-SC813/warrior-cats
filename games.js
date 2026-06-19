@@ -193,7 +193,10 @@ function startGame() {
   document.getElementById('customizationMenu').style.display = 'none';
   document.getElementById('gameStats').style.display = 'block';
   playerGroup.scale.set(0.4, 0.4, 0.4);
+  camera.position.set(0, 2, 3);
+  camera.lookAt(0, 0.5, 0);
   updateUI();
+  animate();
   setInterval(ageOneMoon, 25000);
 }
 
@@ -204,3 +207,75 @@ function updateUI() {
   document.getElementById('catAge').innerText = `Age: ${catData.moons} Moons`;
   document.getElementById('catHP').innerText = `Health: ${catData.hp}%`;
   document.getElementById('freshKill').innerText = `Fresh-Kill Pile: ${catData.freshKill}`;
+}
+
+function ageOneMoon() {
+  catData.moons++;
+  if (catData.moons === 6) catData.rank = "Apprentice";
+  if (catData.moons === 12) catData.rank = "Warrior";
+  updateUI();
+}
+
+// --- 7. INPUT HANDLING ---
+const keys = {};
+window.addEventListener('keydown', (e) => { keys[e.key] = true; });
+window.addEventListener('keyup', (e) => { keys[e.key] = false; });
+
+// --- 8. MAIN ANIMATION LOOP ---
+function animate() {
+  requestAnimationFrame(animate);
+  
+  // Move prey
+  preyArray.forEach(prey => {
+    prey.position.x += Math.cos(prey.direction) * 0.02;
+    prey.position.z += Math.sin(prey.direction) * 0.02;
+    if (Math.random() < 0.02) prey.direction = Math.random() * Math.PI * 2;
+  });
+  
+  // Move player
+  if (keys['w']) playerGroup.position.z -= 0.1;
+  if (keys['s']) playerGroup.position.z += 0.1;
+  if (keys['a']) playerGroup.position.x -= 0.1;
+  if (keys['d']) playerGroup.position.x += 0.1;
+  
+  // Spacebar - hunt/fight
+  if (keys[' ']) {
+    preyArray.forEach((prey, i) => {
+      const dist = playerGroup.position.distanceTo(prey.position);
+      if (dist < 1.5) {
+        catData.freshKill++;
+        scene.remove(prey);
+        preyArray.splice(i, 1);
+      }
+    });
+    
+    rogueArray.forEach((rogue, i) => {
+      const dist = playerGroup.position.distanceTo(rogue.position);
+      if (dist < 2) {
+        rogue.hp -= 10;
+        if (rogue.hp <= 0) {
+          scene.remove(rogue);
+          rogueArray.splice(i, 1);
+        }
+        catData.hp = Math.max(0, catData.hp - 5);
+      }
+    });
+    
+    updateUI();
+    keys[' '] = false;
+  }
+  
+  // Camera follow
+  camera.position.x = playerGroup.position.x;
+  camera.position.z = playerGroup.position.z + 3;
+  camera.lookAt(playerGroup.position);
+  
+  renderer.render(scene, camera);
+}
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
