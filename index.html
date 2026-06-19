@@ -1,0 +1,71 @@
+<canvas id="gameCanvas"></canvas>
+
+<div id="uiOverlay">
+  
+  <div id="customizationMenu">
+    <h2>Design Your Warrior</h2>
+    <label for="nameInput">Enter Prefix:</label><br>
+    <input type="text" id="nameInput" placeholder="e.g., Fire, Bramble" value="Fire"><br>
+    
+    <p class="menu-label">Choose Your Clan:</p>
+    <div class="selection-grid">
+      <button class="clan-btn tc" onclick="selectClan('ThunderClan')">ThunderClan</button>
+      <button class="clan-btn rc" onclick="selectClan('RiverClan')">RiverClan</button>
+      <button class="clan-btn wc" onclick="selectClan('WindClan')">WindClan</button>
+      <button class="clan-btn sc" onclick="selectClan('ShadowClan')">ShadowClan</button>
+    </div>
+
+    <p class="menu-label">Base Fur Color:</p>
+    <div class="selection-grid">
+      <button onclick="changeFur('orange')">Ginger</button>
+      <button onclick="changeFur('gray')">Slate Gray</button>
+      <button onclick="changeFur('brown')">Brown</button>
+      <button onclick="changeFur('black')">Black</button>
+      <button onclick="changeFur('white')">White</button>
+      <button onclick="changeFur('silver')">Silver</button>
+      <button onclick="changeFur('tortie')" style="grid-column: span 3; background: #4a3525;">Tortoiseshell (Mottled)</button>
+    </div>
+    
+    <p class="menu-label">Coat Markings:</p>
+    <div class="selection-grid">
+      <button onclick="changeMarkings('solid')">Solid Coat</button>
+      <button onclick="changeMarkings('socks')">White Socks</button>
+      <button onclick="changeMarkings('tabby')">Tabby Face</button>
+      <button onclick="changeMarkings('point')">Siamese Point</button>
+    </div>
+
+    <p class="menu-label">Coat Length:</p>
+    <div class="selection-grid">
+      <button onclick="changeLength('short')">Short Hair</button>
+      <button onclick="changeLength('long')">Long/Fluffy</button>
+    </div>
+    
+    <p class="menu-label">Eye Color:</p>
+    <div class="selection-grid">
+      <button class="eye-btn" onclick="changeEyes('amber')">Amber</button>
+      <button class="eye-btn" onclick="changeEyes('green')">Green</button>
+      <button class="eye-btn" onclick="changeEyes('blue')">Ice Blue</button>
+    </div>
+    
+    <button id="startBtn" onclick="startGame()">Enter the Forest</button>
+  </div>
+
+  <div id="gameStats" style="display:none;">
+    <div class="stat-card">
+      <h3 id="catName">Name: Loading...</h3>
+      <p id="catClan" style="font-weight: bold; color: #aed1b4;">Clan: Loading...</p>
+      <p id="catRank">Rank: Kit</p>
+      <p id="catAge">Age: 0 Moons</p>
+      <!-- NEW: Vital Tracker Bars -->
+      <p id="catHP" style="color: #ff6b6b; font-weight: bold;">Health: 100%</p>
+      <p id="freshKill" style="color: #ffd269; font-weight: bold;">Fresh-Kill Pile: 0</p>
+    </div>
+    <div class="inventory-card">
+      <h4>Medicine Bag</h4>
+      <ul id="herbList"><li>Empty</li></ul>
+      <p style="font-size: 11px; margin-top: 10px; color: #a3b899; line-height: 1.2;">[SPACEBAR] to catch prey or claw nearby rogues!</p>
+    </div>
+    <div id="dialogueBox"></div>
+  </div>
+  
+</div>
