@@ -53,14 +53,17 @@ const eyePalette = {
 
 // Clan Environments Data
 const clanEnvironments = {
-  ThunderClan: { groundColor: 0x224017, skyColor: 0x0c1710, sunColor: 0xfffaed, density: 1.1 },
-  RiverClan:   { groundColor: 0x1d353b, skyColor: 0x09141c, sunColor: 0xdef0ff, density: 1.3 },
-  WindClan:    { groundColor: 0x3d4f26, skyColor: 0x192429, sunColor: 0xffffff, density: 1.4 },
-  ShadowClan:  { groundColor: 0x171a14, skyColor: 0x040805, sunColor: 0xd6c7a7, density: 0.8 }
+  ThunderClan: { groundColor: 0x224017, skyColor: 0x0c1710, sunColor: 0xfffaed, density: 1.1, icon: '⚡' },
+  RiverClan:   { groundColor: 0x1d353b, skyColor: 0x09141c, sunColor: 0xdef0ff, density: 1.3, icon: '💧' },
+  WindClan:    { groundColor: 0x3d4f26, skyColor: 0x192429, sunColor: 0xffffff, density: 1.4, icon: '🌬️' },
+  ShadowClan:  { groundColor: 0x171a14, skyColor: 0x040805, sunColor: 0xd6c7a7, density: 0.8, icon: '🌙' },
+  SkyClan:     { groundColor: 0x2a3a4a, skyColor: 0x1a2a3a, sunColor: 0xd4c5ff, density: 1.0, icon: '☁️' }
 };
 
 const mainFurMat = new THREE.MeshStandardMaterial({ color: furPalette.orange, roughness: 0.7 });
-const markingMat = new THREE.MeshStandardMaterial({ color: furPalette.orange, roughness: 0.7 });
+const markingMat = new THREE.MeshStandardMaterial({ color: furPalette.white, roughness: 0.7 });
+const tertiaryMat = new THREE.MeshStandardMaterial({ color: furPalette.white, roughness: 0.7 });
+const quaternaryMat = new THREE.MeshStandardMaterial({ color: furPalette.white, roughness: 0.7 });
 const leftEyeMat = new THREE.MeshStandardMaterial({ color: eyePalette.amber, roughness: 0.1 });
 const rightEyeMat = new THREE.MeshStandardMaterial({ color: eyePalette.amber, roughness: 0.1 });
 
@@ -73,11 +76,35 @@ const patchPool = [tortieBlack, tortieGinger, tortieCream];
 // --- 3. CONSTRUCT 3D SEGMENTED CAT ---
 const playerGroup = new THREE.Group();
 const customizableSegments = [];
+const secondarySegments = [];
+const tertiarySegments = [];
+const quaternarySegments = [];
 
 function registerPart(mesh) {
   mesh.castShadow = true;
   playerGroup.add(mesh);
   customizableSegments.push(mesh);
+  return mesh;
+}
+
+function registerSecondaryPart(mesh) {
+  mesh.castShadow = true;
+  playerGroup.add(mesh);
+  secondarySegments.push(mesh);
+  return mesh;
+}
+
+function registerTertiaryPart(mesh) {
+  mesh.castShadow = true;
+  playerGroup.add(mesh);
+  tertiarySegments.push(mesh);
+  return mesh;
+}
+
+function registerQuaternaryPart(mesh) {
+  mesh.castShadow = true;
+  playerGroup.add(mesh);
+  quaternarySegments.push(mesh);
   return mesh;
 }
 
@@ -132,59 +159,357 @@ const bushyT = registerPart(new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.8
 fluffGroup.add(cheekL, cheekR, chestF, bushyT);
 playerGroup.add(fluffGroup); fluffGroup.visible = false;
 
+// Secondary patches
+const chestPatch = registerSecondaryPart(new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.3), markingMat));
+chestPatch.position.set(0, 0.7, 0.5);
+chestPatch.visible = false;
+
+const facePatch = registerSecondaryPart(new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.25, 0.2), markingMat));
+facePatch.position.set(0, 1.05, 0.65);
+facePatch.visible = false;
+
+// Tertiary patches
+const tertiaryChest = registerTertiaryPart(new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.2, 0.2), tertiaryMat));
+tertiaryChest.position.set(0, 0.75, 0.55);
+tertiaryChest.visible = false;
+
+const tertiaryFace = registerTertiaryPart(new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.15, 0.15), tertiaryMat));
+tertiaryFace.position.set(0, 1.1, 0.7);
+tertiaryFace.visible = false;
+
+// Quaternary patches (smallest accents)
+const quaternaryTip = registerQuaternaryPart(new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.15), quaternaryMat));
+quaternaryTip.position.set(0, 0.7, -0.7);
+quaternaryTip.visible = false;
+
+const quaternaryNose = registerQuaternaryPart(new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 0.08), quaternaryMat));
+quaternaryNose.position.set(0, 0.95, 0.8);
+quaternaryNose.visible = false;
+
 scene.add(playerGroup);
 
 // --- 4. CUSTOMIZER LOGIC FUNCTIONS ---
-let currentFurSelection = 'orange';
+let currentPrimaryFur = 'orange';
+let currentSecondaryFur = 'white';
+let currentTertiaryFur = 'none';
+let currentQuaternaryFur = 'none';
+let currentPrimaryPattern = 'solid';
+let currentSecondaryPattern = 'none';
+let currentTertiaryPattern = 'none';
+let currentQuaternaryPattern = 'none';
+let currentFurLength = 'short';
+let currentFurTexture = 'normal';
+let currentBuild = 'average';
+let currentDistinctiveFeature = 'none';
 
-function changeFur(type) {
-  currentFurSelection = type;
+// Update preview canvas with cat info
+function updatePreviewInfo() {
+  const nameInput = document.getElementById('nameInput').value.trim() || 'Fire';
+  const catNameDisplay = document.getElementById('catNamePreview');
+  const catDescription = document.getElementById('catDescription');
+  
+  catNameDisplay.textContent = nameInput + '-kit';
+  
+  let description = `${currentBuild.charAt(0).toUpperCase() + currentBuild.slice(1)} ${currentPrimaryFur}`;
+  if (currentFurLength === 'long' || currentFurLength === 'extra-long') {
+    description += ' fluffy';
+  }
+  catDescription.textContent = description;
+}
+
+function changePrimaryFur(type) {
+  currentPrimaryFur = type;
   if (type === 'tortie') { 
     applyTortieColors(); 
   } else {
     const hex = furPalette[type];
-    mainFurMat.color.setHex(hex); markingMat.color.setHex(hex);
-    customizableSegments.forEach(mesh => mesh.material = mainFurMat);
-    muzzle.material = markingMat; updatePawColors(hex);
+    mainFurMat.color.setHex(hex);
+    customizableSegments.forEach(mesh => {
+      if (mesh !== muzzle && !mesh.name?.includes('Paw')) {
+        mesh.material = mainFurMat;
+      }
+    });
+    applyTexture();
   }
+  updatePreviewInfo();
+}
+
+function changeSecondaryFur(type) {
+  currentSecondaryFur = type;
+  const hex = furPalette[type];
+  markingMat.color.setHex(hex);
+  secondarySegments.forEach(mesh => mesh.material = markingMat);
+  applySecondaryPattern();
+  updatePreviewInfo();
+}
+
+function changeTertiaryFur(type) {
+  currentTertiaryFur = type;
+  if (type === 'none') {
+    tertiarySegments.forEach(mesh => mesh.visible = false);
+  } else {
+    const hex = furPalette[type];
+    tertiaryMat.color.setHex(hex);
+    tertiarySegments.forEach(mesh => mesh.material = tertiaryMat);
+  }
+  applyTertiaryPattern();
+  updatePreviewInfo();
+}
+
+function changeQuaternaryFur(type) {
+  currentQuaternaryFur = type;
+  if (type === 'none') {
+    quaternarySegments.forEach(mesh => mesh.visible = false);
+  } else {
+    const hex = furPalette[type];
+    quaternaryMat.color.setHex(hex);
+    quaternarySegments.forEach(mesh => mesh.material = quaternaryMat);
+  }
+  applyQuaternaryPattern();
+  updatePreviewInfo();
+}
+
+function changePrimaryPattern(type) {
+  currentPrimaryPattern = type;
+  applyPatternEffect();
+  updatePreviewInfo();
+}
+
+function changeSecondaryPattern(type) {
+  currentSecondaryPattern = type;
+  applySecondaryPattern();
+  updatePreviewInfo();
+}
+
+function changeTertiaryPattern(type) {
+  currentTertiaryPattern = type;
+  applyTertiaryPattern();
+  updatePreviewInfo();
+}
+
+function changeQuaternaryPattern(type) {
+  currentQuaternaryPattern = type;
+  applyQuaternaryPattern();
+  updatePreviewInfo();
+}
+
+function applySecondaryPattern() {
+  chestPatch.visible = false;
+  facePatch.visible = false;
+  
+  switch(currentSecondaryPattern) {
+    case 'socks':
+      updatePawColors(furPalette[currentSecondaryFur]);
+      break;
+    case 'blaze':
+      facePatch.visible = true;
+      break;
+    case 'chest':
+      chestPatch.visible = true;
+      break;
+    case 'calico':
+      chestPatch.visible = true;
+      facePatch.visible = true;
+      break;
+    case 'points':
+      updatePawColors(furPalette[currentSecondaryFur]);
+      muzzle.material = markingMat;
+      break;
+    case 'mittens':
+      updatePawColors(furPalette[currentSecondaryFur]);
+      break;
+    case 'belly':
+      chestPatch.visible = true;
+      break;
+    case 'saddle':
+      chestPatch.visible = true;
+      break;
+  }
+}
+
+function applyTertiaryPattern() {
+  tertiaryChest.visible = false;
+  tertiaryFace.visible = false;
+  
+  if (currentTertiaryFur === 'none') return;
+  
+  switch(currentTertiaryPattern) {
+    case 'chest':
+      tertiaryChest.visible = true;
+      break;
+    case 'blaze':
+      tertiaryFace.visible = true;
+      break;
+    case 'stripe':
+      tertiaryChest.visible = true;
+      break;
+    case 'spots':
+      tertiaryFace.visible = true;
+      tertiaryChest.visible = true;
+      break;
+    case 'paws':
+      updatePawColors(furPalette[currentTertiaryFur]);
+      break;
+  }
+}
+
+function applyQuaternaryPattern() {
+  quaternaryTip.visible = false;
+  quaternaryNose.visible = false;
+  
+  if (currentQuaternaryFur === 'none') return;
+  
+  switch(currentQuaternaryPattern) {
+    case 'tail-tip':
+      quaternaryTip.visible = true;
+      break;
+    case 'nose':
+      quaternaryNose.visible = true;
+      break;
+    case 'spots':
+      quaternaryNose.visible = true;
+      quaternaryTip.visible = true;
+      break;
+  }
+}
+
+function applyPatternEffect() {
+  let roughness = 0.7;
+  switch(currentPrimaryPattern) {
+    case 'sleek': roughness = 0.4; break;
+    case 'matte': roughness = 0.9; break;
+    case 'tabby': roughness = 0.6; break;
+    case 'spotted': roughness = 0.65; break;
+  }
+  mainFurMat.roughness = roughness;
 }
 
 function applyTortieColors() {
   customizableSegments.forEach(mesh => mesh.material = patchPool[Math.floor(Math.random() * 3)]);
-  muzzle.material = tortieGinger; updatePawColors(furPalette.black);
+  muzzle.material = tortieGinger;
+  updatePawColors(furPalette.black);
 }
 
-function changeEyes(type) { 
+function changePrimaryEyes(type) { 
   leftEyeMat.color.setHex(eyePalette[type]); 
-  rightEyeMat.color.setHex(eyePalette[type]); 
-}
-
-function changeMarkings(style) {
-  if (currentFurSelection === 'tortie') return; 
-  if (style === 'solid') { markingMat.color.setHex(furPalette[currentFurSelection]); updatePawColors(furPalette[currentFurSelection]); } 
-  else if (style === 'socks') { markingMat.color.setHex(furPalette[currentFurSelection]); updatePawColors(0xedebe6); } 
-  else if (style === 'tabby') { markingMat.color.setHex(0x2d2015); updatePawColors(furPalette[currentFurSelection]); } 
-  else if (style === 'point') { markingMat.color.setHex(0x2b1e14); updatePawColors(0x2b1e14); }
-}
-
-function updatePawColors(hexColor) {
-  playerGroup.traverse((child) => { if (child.name && child.name.includes("Paw")) child.material = new THREE.MeshStandardMaterial({ color: hexColor, roughness: 0.7 }); });
+  rightEyeMat.color.setHex(eyePalette[type]);
+  updatePreviewInfo();
 }
 
 function changeLength(lengthType) {
-  if (lengthType === 'long') { fluffGroup.visible = true; tail.visible = false; } else { fluffGroup.visible = false; tail.visible = true; }
+  currentFurLength = lengthType;
+  const hasFluff = lengthType !== 'short';
+  fluffGroup.visible = hasFluff;
+  
+  if (lengthType === 'extra-long') {
+    cheekL.scale.set(1.3, 1.3, 1.3);
+    cheekR.scale.set(1.3, 1.3, 1.3);
+    bushyT.scale.set(1.3, 1.3, 1.3);
+  } else if (lengthType === 'long') {
+    cheekL.scale.set(1.1, 1.1, 1.1);
+    cheekR.scale.set(1.1, 1.1, 1.1);
+    bushyT.scale.set(1.1, 1.1, 1.1);
+  } else {
+    cheekL.scale.set(1, 1, 1);
+    cheekR.scale.set(1, 1, 1);
+    bushyT.scale.set(1, 1, 1);
+  }
+  updatePreviewInfo();
+}
+
+function changeFurTexture(type) {
+  currentFurTexture = type;
+  let roughness = 0.7;
+  
+  switch(type) {
+    case 'sleek': roughness = 0.3; break;
+    case 'matte': roughness = 0.95; break;
+    case 'rough': roughness = 0.85; break;
+    case 'curly': roughness = 0.8; break;
+  }
+  
+  mainFurMat.roughness = roughness;
+  markingMat.roughness = roughness;
+  updatePreviewInfo();
+}
+
+function changeBuild(type) {
+  currentBuild = type;
+  let scaleX = 1, scaleY = 1, scaleZ = 1;
+  
+  switch(type) {
+    case 'lean':
+      scaleX = 0.85; scaleY = 0.95;
+      break;
+    case 'muscular':
+      scaleX = 1.15; scaleY = 1.1;
+      break;
+    case 'slender':
+      scaleX = 0.8; scaleY = 1.05;
+      break;
+    case 'bulky':
+      scaleX = 1.25; scaleY = 1.15;
+      break;
+  }
+  
+  playerGroup.children.forEach(child => {
+    if (child !== fluffGroup) {
+      child.scale.set(scaleX, scaleY, scaleZ);
+    }
+  });
+  updatePreviewInfo();
+}
+
+function changeDistinctiveFeature(type) {
+  currentDistinctiveFeature = type;
+  switch(type) {
+    case 'shortTail':
+      tail.scale.z = 0.6;
+      break;
+    case 'whiteTip':
+      tail.material = markingMat;
+      break;
+    default:
+      tail.scale.z = 1;
+      tail.material = mainFurMat;
+  }
+  updatePreviewInfo();
+}
+
+function updatePawColors(hexColor) {
+  playerGroup.traverse((child) => { 
+    if (child.name && child.name.includes("Paw")) {
+      child.material = new THREE.MeshStandardMaterial({ color: hexColor, roughness: 0.7 }); 
+    }
+  });
 }
 
 function selectClan(clanName) {
-  selectedClan = clanName; const env = clanEnvironments[clanName];
-  floorMaterial.color.setHex(env.groundColor); scene.background.setHex(env.skyColor);
-  sunLight.color.setHex(env.sunColor); sunLight.intensity = env.density;
+  selectedClan = clanName;
+  const env = clanEnvironments[clanName];
+  floorMaterial.color.setHex(env.groundColor);
+  scene.background.setHex(env.skyColor);
+  sunLight.color.setHex(env.sunColor);
+  sunLight.intensity = env.density;
+  
+  // Update clan badge
+  const badge = document.getElementById('clanBadge');
+  badge.className = 'clan-badge ' + Object.keys(clanEnvironments).find(key => key === clanName)?.toLowerCase();
+  if (clanName === 'ThunderClan') badge.className = 'clan-badge tc';
+  else if (clanName === 'RiverClan') badge.className = 'clan-badge rc';
+  else if (clanName === 'WindClan') badge.className = 'clan-badge wc';
+  else if (clanName === 'ShadowClan') badge.className = 'clan-badge sc';
+  else if (clanName === 'SkyClan') badge.className = 'clan-badge kc';
+  
+  badge.innerHTML = `<span class="clan-icon">${env.icon}</span><span class="clan-name">${clanName}</span>`;
+  updatePreviewInfo();
 }
 selectClan("ThunderClan");
 
 // --- 5. DATA STATE & ENTITY ARRAYS ---
 let catData = { prefix: "Fire", suffix: "kit", rank: "Kit", moons: 0, inventory: [], hp: 100, freshKill: 0 };
 let selectedClan = "ThunderClan";
+let gameStarted = false;
 
 const herbsArray = [];
 const preyArray = [];
@@ -217,14 +542,26 @@ spawnRogue(-15, -15); spawnRogue(20, 20);
 function startGame() {
   catData.prefix = document.getElementById('nameInput').value.trim() || "Fire";
   document.getElementById('customizationMenu').style.display = 'none';
+  document.getElementById('nurseryUI').style.display = 'flex';
+  gameStarted = false;
+}
+
+function enterForest() {
+  document.getElementById('nurseryUI').style.display = 'none';
   document.getElementById('gameStats').style.display = 'block';
   document.querySelector('.mobile-controls').classList.add('show');
   playerGroup.scale.set(0.4, 0.4, 0.4);
   camera.position.set(0, 2, 3);
   camera.lookAt(0, 0.5, 0);
   updateUI();
+  gameStarted = true;
   animate();
   setInterval(ageOneMoon, 25000);
+}
+
+function backToCustomizer() {
+  document.getElementById('nurseryUI').style.display = 'none';
+  document.getElementById('customizationMenu').style.display = 'block';
 }
 
 function updateUI() {
@@ -294,8 +631,13 @@ function setupMobileControls() {
 
 const mobileDirections = setupMobileControls();
 
+// Add event listeners for real-time preview updates
+document.getElementById('nameInput').addEventListener('input', updatePreviewInfo);
+
 // --- 8. MAIN ANIMATION LOOP ---
 function animate() {
+  if (!gameStarted) return;
+  
   requestAnimationFrame(animate);
   
   // Move prey
@@ -358,3 +700,6 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// Initialize preview
+updatePreviewInfo();
