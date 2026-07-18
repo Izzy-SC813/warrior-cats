@@ -60,6 +60,8 @@ body, html {
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  position: sticky;
+  top: 0;
 }
 
 .cat-preview-section h2 {
@@ -105,6 +107,22 @@ body, html {
   font-size: 22px;
 }
 
+.coat-section {
+  background: rgba(30, 50, 40, 0.5);
+  border: 1px solid #5a7d62;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.coat-section h3 {
+  margin: 0 0 15px 0;
+  color: #aed1b4;
+  font-size: 16px;
+  border-bottom: 2px solid #5a7d62;
+  padding-bottom: 8px;
+}
+
 .form-group {
   margin-bottom: 18px;
 }
@@ -117,7 +135,8 @@ body, html {
   font-size: 14px;
 }
 
-#customizationMenu input {
+#customizationMenu input,
+#customizationMenu select {
   padding: 10px;
   font-size: 16px;
   border-radius: 6px;
@@ -129,10 +148,20 @@ body, html {
   transition: 0.2s;
 }
 
-#customizationMenu input:focus {
+#customizationMenu input:focus,
+#customizationMenu select:focus {
   outline: none;
   border-color: #aed1b4;
   background: #2a3e32;
+}
+
+#customizationMenu select {
+  cursor: pointer;
+}
+
+#customizationMenu select option {
+  background: #243328;
+  color: white;
 }
 
 .menu-label {
@@ -231,7 +260,6 @@ button.selected {
   font-size: 16px;
   font-weight: bold;
   padding: 14px;
-  grid-column: span 3;
   transition: 0.3s;
 }
 
@@ -378,6 +406,11 @@ h3, h4 { margin: 0 0 10px 0; }
     gap: 20px;
   }
   
+  .cat-preview-section {
+    position: relative;
+    top: auto;
+  }
+  
   .preview-box {
     width: 250px;
     height: 300px;
@@ -422,6 +455,14 @@ h3, h4 { margin: 0 0 10px 0; }
   
   .customization-options h2 {
     font-size: 18px;
+  }
+  
+  .coat-section {
+    padding: 12px;
+  }
+  
+  .coat-section h3 {
+    font-size: 14px;
   }
   
   .stat-card { 
@@ -475,6 +516,14 @@ h3, h4 { margin: 0 0 10px 0; }
   
   .cat-name-display {
     font-size: 18px;
+  }
+  
+  .coat-section {
+    padding: 10px;
+  }
+  
+  .coat-section h3 {
+    font-size: 13px;
   }
   
   .stat-card, .inventory-card {
