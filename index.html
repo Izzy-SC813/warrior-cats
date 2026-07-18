@@ -46,44 +46,152 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <p class="menu-label">🎨 Fur Color:</p>
-            <div class="selection-grid">
-              <button class="color-btn" onclick="changeFur('orange')" style="background: #d4a373;">Ginger</button>
-              <button class="color-btn" onclick="changeFur('gray')" style="background: #6b7782;">Slate Gray</button>
-              <button class="color-btn" onclick="changeFur('brown')" style="background: #544336;">Brown</button>
-              <button class="color-btn" onclick="changeFur('black')" style="background: #1c1c1c;">Black</button>
-              <button class="color-btn" onclick="changeFur('white')" style="background: #edebe6;">White</button>
-              <button class="color-btn" onclick="changeFur('silver')" style="background: #a1aab3;">Silver</button>
+          <!-- PRIMARY COAT SECTION -->
+          <div class="coat-section">
+            <h3>Primary Coat</h3>
+            
+            <div class="form-group">
+              <label for="primaryFurColor">🎨 Primary Fur Color:</label>
+              <select id="primaryFurColor" onchange="changePrimaryFur(this.value)">
+                <option value="orange">Ginger</option>
+                <option value="gray">Slate Gray</option>
+                <option value="brown">Brown</option>
+                <option value="black">Black</option>
+                <option value="white">White</option>
+                <option value="silver">Silver</option>
+                <option value="cream">Cream</option>
+                <option value="red">Deep Red</option>
+                <option value="cinnamon">Cinnamon</option>
+                <option value="chocolate">Chocolate</option>
+                <option value="fawn">Fawn</option>
+                <option value="tortie">🌈 Tortoiseshell</option>
+              </select>
             </div>
-            <button class="special-btn" onclick="changeFur('tortie')">🌈 Tortoiseshell</button>
+
+            <div class="form-group">
+              <label for="primaryPattern">✨ Primary Pattern:</label>
+              <select id="primaryPattern" onchange="changePrimaryPattern(this.value)">
+                <option value="solid">Solid Coat</option>
+                <option value="tabby">Tabby Stripes</option>
+                <option value="spotted">Spotted</option>
+                <option value="mackerel">Mackerel Tabby</option>
+                <option value="classic">Classic Tabby</option>
+                <option value="ticked">Ticked</option>
+                <option value="striped">Striped</option>
+                <option value="rosette">Rosette</option>
+                <option value="dappled">Dappled</option>
+                <option value="speckled">Speckled</option>
+                <option value="marbled">Marbled</option>
+                <option value="smoke">Smoke</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="primaryEyeColor">👁️ Eye Color:</label>
+              <select id="primaryEyeColor" onchange="changePrimaryEyes(this.value)">
+                <option value="amber">Amber</option>
+                <option value="green">Green</option>
+                <option value="blue">Ice Blue</option>
+                <option value="gold">Gold</option>
+                <option value="copper">Copper</option>
+                <option value="yellow">Yellow</option>
+                <option value="orange">Orange</option>
+                <option value="emerald">Emerald</option>
+                <option value="sapphire">Sapphire</option>
+                <option value="violet">Violet</option>
+                <option value="silver">Silver</option>
+                <option value="gray">Gray</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- SECONDARY COAT SECTION -->
+          <div class="coat-section">
+            <h3>Secondary Coat (Patches/Markings)</h3>
+            
+            <div class="form-group">
+              <label for="secondaryFurColor">🎨 Secondary Fur Color:</label>
+              <select id="secondaryFurColor" onchange="changeSecondaryFur(this.value)">
+                <option value="orange">Ginger</option>
+                <option value="gray">Slate Gray</option>
+                <option value="brown">Brown</option>
+                <option value="black">Black</option>
+                <option value="white">White</option>
+                <option value="silver">Silver</option>
+                <option value="cream">Cream</option>
+                <option value="red">Deep Red</option>
+                <option value="cinnamon">Cinnamon</option>
+                <option value="chocolate">Chocolate</option>
+                <option value="fawn">Fawn</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="secondaryPattern">✨ Secondary Pattern:</label>
+              <select id="secondaryPattern" onchange="changeSecondaryPattern(this.value)">
+                <option value="none">None (Solid Primary)</option>
+                <option value="socks">White Socks</option>
+                <option value="blaze">Blaze (Face Mark)</option>
+                <option value="chest">Chest Patch</option>
+                <option value="calico">Calico Patches</option>
+                <option value="bicolor">Bicolor (Half & Half)</option>
+                <option value="points">Siamese Points</option>
+                <option value="mittens">Mittens (Paws)</option>
+                <option value="mask">Mask</option>
+                <option value="saddle">Saddle Spot</option>
+                <option value="rings">Tail Rings</option>
+                <option value="belly">Belly Patch</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- COAT LENGTH & FUR TEXTURE -->
+          <div class="form-group">
+            <label for="furLength">💇 Coat Length:</label>
+            <select id="furLength" onchange="changeLength(this.value)">
+              <option value="short">Short Hair</option>
+              <option value="medium">Medium Hair</option>
+              <option value="long">Long/Fluffy</option>
+              <option value="extra-long">Extra Long/Fluffball</option>
+            </select>
           </div>
 
           <div class="form-group">
-            <p class="menu-label">✨ Markings:</p>
-            <div class="selection-grid">
-              <button onclick="changeMarkings('solid')">Solid Coat</button>
-              <button onclick="changeMarkings('socks')">White Socks</button>
-              <button onclick="changeMarkings('tabby')">Tabby Face</button>
-              <button onclick="changeMarkings('point')">Siamese Point</button>
-            </div>
+            <label for="furTexture">🪶 Fur Texture:</label>
+            <select id="furTexture" onchange="changeFurTexture(this.value)">
+              <option value="normal">Normal</option>
+              <option value="sleek">Sleek & Shiny</option>
+              <option value="matte">Matte</option>
+              <option value="rough">Rough & Wiry</option>
+              <option value="curly">Curly</option>
+            </select>
+          </div>
+
+          <!-- BUILD & DISTINCTIVE FEATURES -->
+          <div class="form-group">
+            <label for="catBuild">🏗️ Body Build:</label>
+            <select id="catBuild" onchange="changeBuild(this.value)">
+              <option value="average">Average</option>
+              <option value="lean">Lean & Agile</option>
+              <option value="muscular">Muscular & Stocky</option>
+              <option value="slender">Slender & Graceful</option>
+              <option value="bulky">Bulky & Powerful</option>
+            </select>
           </div>
 
           <div class="form-group">
-            <p class="menu-label">💇 Coat Length:</p>
-            <div class="selection-grid">
-              <button onclick="changeLength('short')">Short Hair</button>
-              <button onclick="changeLength('long')">Long/Fluffy</button>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <p class="menu-label">👁️ Eye Color:</p>
-            <div class="selection-grid">
-              <button class="eye-btn" onclick="changeEyes('amber')" style="background: #d97e18;">Amber</button>
-              <button class="eye-btn" onclick="changeEyes('green')" style="background: #448c46;">Green</button>
-              <button class="eye-btn" onclick="changeEyes('blue')" style="background: #5ca9e6;">Ice Blue</button>
-            </div>
+            <label for="distinctiveFeature">⭐ Distinctive Feature:</label>
+            <select id="distinctiveFeature" onchange="changeDistinctiveFeature(this.value)">
+              <option value="none">None</option>
+              <option value="scar">Battle Scar</option>
+              <option value="notchedEar">Notched Ear</option>
+              <option value="shortTail">Short Tail</option>
+              <option value="blindEye">Blind Eye</option>
+              <option value="whiteTip">White Tail Tip</option>
+              <option value="crooked">Crooked Nose</option>
+              <option value="fangs">Prominent Fangs</option>
+              <option value="longerClaws">Long Claws</option>
+            </select>
           </div>
 
           <button id="startBtn" onclick="startGame()">⚔️ Enter the Forest</button>
