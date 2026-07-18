@@ -21,6 +21,197 @@ floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
 scene.add(floor);
 
+// --- NURSERY SCENE SETUP ---
+let nurseryScene = null;
+let nurseryCamera = null;
+let nurseryElements = [];
+
+function setupNurseryScene() {
+  // Create a separate scene for nursery
+  nurseryScene = new THREE.Scene();
+  nurseryScene.background = new THREE.Color(0x2a1810);
+  
+  // Nursery lighting - warm and cozy
+  const nurseryAmbient = new THREE.AmbientLight(0xffcc99, 0.7);
+  nurseryScene.add(nurseryAmbient);
+  
+  const nurserySun = new THREE.DirectionalLight(0xffdd88, 0.8);
+  nurserySun.position.set(5, 10, 5);
+  nurseryScene.add(nurserySun);
+  
+  // Brown dirt walls - back wall
+  const backWallGeo = new THREE.BoxGeometry(20, 12, 2);
+  const dirtMat = new THREE.MeshStandardMaterial({ 
+    color: 0x6b4423, 
+    roughness: 0.95,
+    map: createDirtTexture()
+  });
+  const backWall = new THREE.Mesh(backWallGeo, dirtMat);
+  backWall.position.z = -8;
+  backWall.position.y = 6;
+  nurseryScene.add(backWall);
+  nurseryElements.push(backWall);
+  
+  // Left wall
+  const leftWallGeo = new THREE.BoxGeometry(2, 12, 16);
+  const leftWall = new THREE.Mesh(leftWallGeo, dirtMat);
+  leftWall.position.x = -10;
+  leftWall.position.y = 6;
+  nurseryScene.add(leftWall);
+  nurseryElements.push(leftWall);
+  
+  // Right wall
+  const rightWall = new THREE.Mesh(leftWallGeo, dirtMat);
+  rightWall.position.x = 10;
+  rightWall.position.y = 6;
+  nurseryScene.add(rightWall);
+  nurseryElements.push(rightWall);
+  
+  // Ceiling (dark)
+  const ceilingGeo = new THREE.BoxGeometry(20, 1, 16);
+  const ceilingMat = new THREE.MeshStandardMaterial({ 
+    color: 0x3d2817, 
+    roughness: 0.9 
+  });
+  const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
+  ceiling.position.y = 12;
+  nurseryScene.add(ceiling);
+  nurseryElements.push(ceiling);
+  
+  // Fluffy moss floor
+  const floorGeo = new THREE.PlaneGeometry(20, 16);
+  const mossMat = new THREE.MeshStandardMaterial({
+    color: 0x5a8c3a,
+    roughness: 0.85,
+    map: createMossTexture()
+  });
+  const mossFloor = new THREE.Mesh(floorGeo, mossMat);
+  mossFloor.rotation.x = -Math.PI / 2;
+  mossFloor.position.y = 0.1;
+  nurseryScene.add(mossFloor);
+  nurseryElements.push(mossFloor);
+  
+  // Add fluffy moss tufts for extra detail
+  addMossTufts(nurseryScene);
+  
+  // Add some rocks and natural elements
+  addNurseryDetails(nurseryScene);
+  
+  // Create a smaller camera for nursery
+  nurseryCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  nurseryCamera.position.set(0, 3, 5);
+  nurseryCamera.lookAt(0, 2, 0);
+}
+
+function createDirtTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+  
+  // Base brown
+  ctx.fillStyle = '#6b4423';
+  ctx.fillRect(0, 0, 256, 256);
+  
+  // Add dirt texture patterns
+  for (let i = 0; i < 200; i++) {
+    const x = Math.random() * 256;
+    const y = Math.random() * 256;
+    const size = Math.random() * 3;
+    ctx.fillStyle = `rgba(${Math.random() * 40 + 50}, ${Math.random() * 30 + 30}, ${Math.random() * 20 + 10}, 0.6)`;
+    ctx.fillRect(x, y, size, size);
+  }
+  
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.magFilter = THREE.NearestFilter;
+  return texture;
+}
+
+function createMossTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+  
+  // Base moss green
+  ctx.fillStyle = '#5a8c3a';
+  ctx.fillRect(0, 0, 256, 256);
+  
+  // Add fuzzy moss texture
+  for (let i = 0; i < 300; i++) {
+    const x = Math.random() * 256;
+    const y = Math.random() * 256;
+    const size = Math.random() * 4;
+    const greenVar = Math.random() * 30;
+    ctx.fillStyle = `rgba(${90 + greenVar}, ${140 + greenVar}, ${58 + greenVar}, 0.7)`;
+    ctx.fillRect(x, y, size, size);
+  }
+  
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.magFilter = THREE.NearestFilter;
+  return texture;
+}
+
+function addMossTufts(scene) {
+  const tufts = [
+    { x: -6, z: -4, scale: 1.2 },
+    { x: 4, z: -3, scale: 1 },
+    { x: -3, z: 3, scale: 1.3 },
+    { x: 6, z: 2, scale: 0.9 },
+    { x: 0, z: -5, scale: 1.1 },
+    { x: -7, z: 5, scale: 1 },
+    { x: 7, z: -2, scale: 1.2 }
+  ];
+  
+  tufts.forEach(tuft => {
+    const tuffGeo = new THREE.ConeGeometry(0.6 * tuft.scale, 0.4 * tuft.scale, 8);
+    const tuffMat = new THREE.MeshStandardMaterial({
+      color: 0x6b9e3d,
+      roughness: 0.9
+    });
+    const tuffMesh = new THREE.Mesh(tuffGeo, tuffMat);
+    tuffMesh.position.set(tuft.x, 0.2, tuft.z);
+    scene.add(tuffMesh);
+    nurseryElements.push(tuffMesh);
+  });
+}
+
+function addNurseryDetails(scene) {
+  // Add some smooth rocks
+  const rocks = [
+    { x: -8, z: -6, size: 0.6 },
+    { x: 8, z: 6, size: 0.7 },
+    { x: 0, z: -7, size: 0.5 },
+    { x: -5, z: 5, size: 0.55 }
+  ];
+  
+  rocks.forEach(rock => {
+    const rockGeo = new THREE.SphereGeometry(rock.size, 8, 8);
+    const rockMat = new THREE.MeshStandardMaterial({
+      color: 0x4a3620,
+      roughness: 0.8
+    });
+    const rockMesh = new THREE.Mesh(rockGeo, rockMat);
+    rockMesh.position.set(rock.x, rock.size * 0.7, rock.z);
+    scene.add(rockMesh);
+    nurseryElements.push(rockMesh);
+  });
+  
+  // Add entrance opening (lighter area)
+  const entranceGeo = new THREE.PlaneGeometry(6, 5);
+  const entranceMat = new THREE.MeshStandardMaterial({
+    color: 0x3a2717,
+    emissive: 0x654321,
+    emissiveIntensity: 0.3
+  });
+  const entrance = new THREE.Mesh(entranceGeo, entranceMat);
+  entrance.position.set(0, 3, -7.8);
+  scene.add(entrance);
+  nurseryElements.push(entrance);
+}
+
+setupNurseryScene();
+
 // --- 2. PALETTE SETTINGS & MATERIAL CACHE ---
 const furPalette = {
   orange: 0xd4a373,
@@ -634,6 +825,14 @@ const mobileDirections = setupMobileControls();
 // Add event listeners for real-time preview updates
 document.getElementById('nameInput').addEventListener('input', updatePreviewInfo);
 
+// Render nursery scene periodically
+function renderNursery() {
+  if (document.getElementById('nurseryUI').style.display === 'flex') {
+    renderer.render(nurseryScene, nurseryCamera);
+    requestAnimationFrame(renderNursery);
+  }
+}
+
 // --- 8. MAIN ANIMATION LOOP ---
 function animate() {
   if (!gameStarted) return;
@@ -694,11 +893,20 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+// Start rendering nursery when UI shows
+const originalStartGame = startGame;
+startGame = function() {
+  originalStartGame();
+  renderNursery();
+};
+
 // Handle window resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  nurseryCamera.aspect = window.innerWidth / window.innerHeight;
+  nurseryCamera.updateProjectionMatrix();
 });
 
 // Initialize preview
