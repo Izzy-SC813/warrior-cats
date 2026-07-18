@@ -23,11 +23,33 @@ scene.add(floor);
 
 // --- 2. PALETTE SETTINGS & MATERIAL CACHE ---
 const furPalette = {
-  orange: 0xd4a373, gray: 0x6b7782, brown: 0x544336,
-  black: 0x1c1c1c, white: 0xedebe6, silver: 0xa1aab3,
-  cream: 0xe6caa3
+  orange: 0xd4a373,
+  gray: 0x6b7782,
+  brown: 0x544336,
+  black: 0x1c1c1c,
+  white: 0xedebe6,
+  silver: 0xa1aab3,
+  cream: 0xe6caa3,
+  red: 0xa84432,
+  cinnamon: 0x8b5a3c,
+  chocolate: 0x3e2723,
+  fawn: 0xc2a082
 };
-const eyePalette = { amber: 0xd97e18, green: 0x448c46, blue: 0x5ca9e6 };
+
+const eyePalette = {
+  amber: 0xd97e18,
+  green: 0x448c46,
+  blue: 0x5ca9e6,
+  gold: 0xffd700,
+  copper: 0xb87333,
+  yellow: 0xffff00,
+  orange: 0xffa500,
+  emerald: 0x50c878,
+  sapphire: 0x0f52ba,
+  violet: 0xee82ee,
+  silver: 0xc0c0c0,
+  gray: 0xa9a9a9
+};
 
 // Clan Environments Data
 const clanEnvironments = {
@@ -132,7 +154,10 @@ function applyTortieColors() {
   muzzle.material = tortieGinger; updatePawColors(furPalette.black);
 }
 
-function changeEyes(type) { leftEyeMat.color.setHex(eyePalette[type]); rightEyeMat.color.setHex(eyePalette[type]); }
+function changeEyes(type) { 
+  leftEyeMat.color.setHex(eyePalette[type]); 
+  rightEyeMat.color.setHex(eyePalette[type]); 
+}
 
 function changeMarkings(style) {
   if (currentFurSelection === 'tortie') return; 
